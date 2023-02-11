@@ -1,4 +1,7 @@
-﻿namespace ADAccountManager;
+﻿using ADAccountManager.Models;
+using System.DirectoryServices.AccountManagement;
+
+namespace ADAccountManager;
 
 public partial class MainPage : ContentPage
 {
@@ -19,6 +22,11 @@ public partial class MainPage : ContentPage
 			CounterBtn.Text = $"Clicked {count} times";
 
 		SemanticScreenReader.Announce(CounterBtn.Text);
+
+		ADUser user = new ADUser(new PrincipalContext(ContextType.Domain, "FERRUM", "OU=Dev,OU=UserAccounts,DC=ferrum,DC=local"));
+		//bool tmp = user.SearchUser("test.user");
+		//user.DeleteUser("test.user");
+		user.CreateUser("Test", "User", "test.user", "ferrum.local");
 	}
 }
 
