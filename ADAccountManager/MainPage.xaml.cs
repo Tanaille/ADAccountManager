@@ -26,7 +26,7 @@ public partial class MainPage : ContentPage
 		ADUser user = new ADUser(new PrincipalContext(ContextType.Domain, "FERRUM", "OU=Dev,OU=UserAccounts,DC=ferrum,DC=local"));
 		//bool tmp = user.SearchUser("test.user");
 		//user.DeleteUser("test.user");
-		user.CreateUser("Test", "User", "test.user", "ferrum.local");
+		user.CreateUser("", "User", "test.user", "ferrum.local");
 	}
 }
 
