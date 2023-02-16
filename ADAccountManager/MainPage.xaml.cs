@@ -5,7 +5,7 @@ namespace ADAccountManager;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
+	private readonly PrincipalContext _context = new PrincipalContext(ContextType.Domain, "ferrum.local", "OU=Dev,OU=UserAccounts,DC=ferrum,DC=local");
 
 	public MainPage()
 	{
@@ -14,19 +14,10 @@ public partial class MainPage : ContentPage
 
 	private void OnCounterClicked(object sender, EventArgs e)
 	{
-		count++;
-
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
-
-		SemanticScreenReader.Announce(CounterBtn.Text);
-
-		ADUser user = new ADUser(new PrincipalContext(ContextType.Domain, "FERRUM", "OU=Dev,OU=UserAccounts,DC=ferrum,DC=local"));
-		//bool tmp = user.SearchUser("test.user");
-		//user.DeleteUser("test.user");
-		user.CreateUser("", "User", "test.user", "ferrum.local");
-	}
+		ADUser user = new ADUser(_context);
+		//user.DeleteUser("riane.pot");
+		//user.CreateUser("Riane", "Pot", "riane.pot", "ferrum.local");
+		//user.Exists("riane.pot");
+    }
 }
 

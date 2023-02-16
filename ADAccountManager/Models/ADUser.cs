@@ -8,11 +8,10 @@ using System.DirectoryServices.AccountManagement;
 
 namespace ADAccountManager.Models
 {
-    internal class ADUser
+    internal sealed class ADUser
     {
         private readonly PrincipalContext _context;
-        private UserPrincipal user;
-
+        
         // Constructor
         public ADUser(PrincipalContext context)
         {
@@ -20,20 +19,57 @@ namespace ADAccountManager.Models
         }
 
         /// <summary>
-        /// Search for a user in the directory.
+        /// Get a user principal from the directory.
         /// </summary>
-        /// <param name="userPrincipalName">Principal name (such as name.surname) of the user to be deleted.</param>
-        /// <returns>True if the user account is found. False if the user account is not found.</returns>
-        public bool SearchUser(string userPrincipalName)
+        /// <param name="userPrincipalName">Name of the user principal to be retrieved.</param>
+        /// <returns>The user principal specified in the parameter.</returns>
+        public UserPrincipal GetUser(string userPrincipalName)
         {
-            // Check if a user account exists.
-            user = UserPrincipal.FindByIdentity(_context, userPrincipalName);
+            UserPrincipal user = new UserPrincipal(_context);
 
-            if (user is not null)
+            try
+            {
+                // Check paramaters for nulls or empty strings
+                ArgumentNullException.ThrowIfNullOrEmpty(userPrincipalName, nameof(userPrincipalName));
+
+                // Find the user using the name provided by the userPrincipalName parameter and returns it if found.
+                user = UserPrincipal.FindByIdentity(_context, userPrincipalName);
+                
+                return user;
+            }
+            catch (Exception e)
+            {
+                Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
+                return user;
+            }
+        }
+
+        /// <summary>
+        /// Check whether a user principal exists.
+        /// </summary>
+        /// <param name="userPrincipalName">User principal name of the user to be checked.</param>
+        /// <returns>True if the user principal exists. False if the user principal does not exist</returns>
+        public bool Exists(string userPrincipalName)
+        {
+            try
+            {
+                // Check paramaters for nulls or empty strings
+                ArgumentNullException.ThrowIfNullOrEmpty(userPrincipalName);
+
+                // Check whether a user principal exists. Return false if the user principal does exist
+                using (var user = GetUser(userPrincipalName))
+                {
+                    if (user == null)
+                        return false;
+                }
+
                 return true;
-
-            else
+            }
+            catch (Exception e)
+            {
+                Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
                 return false;
+            }
         }
 
         /// <summary>
@@ -43,13 +79,33 @@ namespace ADAccountManager.Models
         /// <returns>True if the deletion is successful. False if the deletion is unsuccessful.</returns>
         public bool DeleteUser(string userPrincipalName)
         {
-            // Return false if a user account does not exist
-            if (!SearchUser(userPrincipalName))
+            try
+            {
+                // Check paramaters for nulls or empty strings
+                ArgumentNullException.ThrowIfNullOrEmpty(userPrincipalName);
+
+                if (!Exists(userPrincipalName))
+                {
+                    Application.Current.MainPage.DisplayAlert("Error: User not found.",
+                            $"The username [{userPrincipalName}] cannot be found in the directory.",
+                            "OK");
+
+                    return false;
+                }
+
+                    // Delete a user
+                    using (UserPrincipal user = GetUser(userPrincipalName))
+                {
+                    user.Delete();
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
                 return false;
-
-            user.Delete();
-
-            return true;
+            }
         }
 
         /// <summary>
@@ -64,7 +120,7 @@ namespace ADAccountManager.Models
             string firstName, 
             string lastName, 
             string userPrincipalName, 
-            string upn)
+            string domain)
         {
             try
             {
@@ -72,20 +128,38 @@ namespace ADAccountManager.Models
                 ArgumentNullException.ThrowIfNullOrEmpty(firstName);
                 ArgumentNullException.ThrowIfNullOrEmpty(lastName);
                 ArgumentNullException.ThrowIfNullOrEmpty(userPrincipalName);
-                ArgumentNullException.ThrowIfNullOrEmpty(upn);
+                ArgumentNullException.ThrowIfNullOrEmpty(domain);
 
-                // Return false if a user account does not exist
-                if (SearchUser(userPrincipalName))
+                // Check that parameters do not contain special characters (other than ., - and spaces)
+                string[] parameters =
+                {
+                    firstName,
+                    lastName,
+                    userPrincipalName,
+                    domain
+                };
+
+                if (!Utilities.ADPropertyValidator.ValidateParameters(parameters))
                     return false;
 
-                // Create a new user
-                using (UserPrincipal user = new UserPrincipal(_context))
+                // Check whether a user principal exists
+                if (Exists(userPrincipalName))
+                {
+                    Application.Current.MainPage.DisplayAlert("Error: User already exists.",
+                            $"The user [{userPrincipalName}] already exists in the directory.",
+                            "OK");
+
+                    return false;
+                }
+
+                    // Create a new user
+                    using (UserPrincipal user = new UserPrincipal(_context))
                 {
                     // Set user details and create the account
                     user.Name = userPrincipalName;
                     user.GivenName = firstName;
                     user.Surname = lastName;
-                    user.UserPrincipalName = userPrincipalName + "@" + upn;
+                    user.UserPrincipalName = userPrincipalName + "@" + domain;
                     user.SamAccountName = userPrincipalName;
                     user.DisplayName = firstName + " " + lastName;
                     user.Description = firstName + " " + lastName;
@@ -97,10 +171,9 @@ namespace ADAccountManager.Models
             }
             catch (Exception e)
             {
-                Application.Current.MainPage.DisplayAlert("Argument exception", e.Message, "OK");
+                Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
                 return false;
             }
-
         }
     }
 }
