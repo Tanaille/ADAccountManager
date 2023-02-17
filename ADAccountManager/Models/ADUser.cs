@@ -181,20 +181,20 @@ namespace ADAccountManager.Models
         }
 
         /// <summary>
-        /// Create a new user account.
+        /// Create new user accounts from a CSV file.
         /// </summary>
-        /// <param name="firstName">Given name of the user.</param>
-        /// <param name="lastName">Surname of the user.</param>
-        /// <param name="userPrincipalName">User principal name, in the format "name.surname".</param>
-        /// <param name="upn">Domain the user should be added to.</param>
+        /// <param name="csvPath">The full file path of the CSV file.</param>
         /// <returns>True if the user account creation is successful. False if the user account creation is unsuccessful.</returns>
-        public bool CreateUsersFromCsv(string csvPath)
+        public async Task<bool> CreateUsersFromCsvAsync(string csvPath)
         {
             try
             {
-                // Check arguments for null or empty values
+                // Check arguments for null or empty values, and whether the file exists
                 ArgumentNullException.ThrowIfNullOrEmpty(csvPath);
 
+                if (!File.Exists(csvPath))
+                    throw new FileNotFoundException("File not found: " + csvPath);
+                
                 // Read records from CSV and add users
                 using (StreamReader reader = new StreamReader(csvPath))
                 {
@@ -214,7 +214,7 @@ namespace ADAccountManager.Models
                                 user.DisplayName = record.FirstName + " " + record.LastName;
                                 user.Description = record.FirstName + " " + record.LastName;
                                 user.Enabled = true;
-                                user.Save();
+                                await Task.Run(() => user.Save());
                             }
                         }
                     }
