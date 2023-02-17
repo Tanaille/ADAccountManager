@@ -5,13 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using ADAccountManager.Utilities;
+using System.DirectoryServices.ActiveDirectory;
+using CsvHelper;
+using System.Globalization;
 
 namespace ADAccountManager.Models
 {
     internal sealed class ADUser
     {
         private readonly PrincipalContext _context;
-        
+
         // Constructor
         public ADUser(PrincipalContext context)
         {
@@ -29,12 +33,12 @@ namespace ADAccountManager.Models
 
             try
             {
-                // Check paramaters for nulls or empty strings
+                // Check argument for a null or empty value
                 ArgumentNullException.ThrowIfNullOrEmpty(userPrincipalName, nameof(userPrincipalName));
 
                 // Find the user using the name provided by the userPrincipalName parameter and returns it if found.
                 user = UserPrincipal.FindByIdentity(_context, userPrincipalName);
-                
+
                 return user;
             }
             catch (Exception e)
@@ -53,7 +57,7 @@ namespace ADAccountManager.Models
         {
             try
             {
-                // Check paramaters for nulls or empty strings
+                // Check argument for a null or empty value
                 ArgumentNullException.ThrowIfNullOrEmpty(userPrincipalName);
 
                 // Check whether a user principal exists. Return false if the user principal does exist
@@ -81,7 +85,7 @@ namespace ADAccountManager.Models
         {
             try
             {
-                // Check paramaters for nulls or empty strings
+                // Check argument for a null or empty value
                 ArgumentNullException.ThrowIfNullOrEmpty(userPrincipalName);
 
                 if (!Exists(userPrincipalName))
@@ -93,8 +97,8 @@ namespace ADAccountManager.Models
                     return false;
                 }
 
-                    // Delete a user
-                    using (UserPrincipal user = GetUser(userPrincipalName))
+                // Delete a user
+                using (UserPrincipal user = GetUser(userPrincipalName))
                 {
                     user.Delete();
                 }
@@ -117,14 +121,14 @@ namespace ADAccountManager.Models
         /// <param name="upn">Domain the user should be added to.</param>
         /// <returns>True if the user account creation is successful. False if the user account creation is unsuccessful.</returns>
         public bool CreateUser(
-            string firstName, 
-            string lastName, 
-            string userPrincipalName, 
+            string firstName,
+            string lastName,
+            string userPrincipalName,
             string domain)
         {
             try
             {
-                // Check paramaters for nulls or empty strings
+                // Check arguments for null or empty values
                 ArgumentNullException.ThrowIfNullOrEmpty(firstName);
                 ArgumentNullException.ThrowIfNullOrEmpty(lastName);
                 ArgumentNullException.ThrowIfNullOrEmpty(userPrincipalName);
@@ -152,8 +156,8 @@ namespace ADAccountManager.Models
                     return false;
                 }
 
-                    // Create a new user
-                    using (UserPrincipal user = new UserPrincipal(_context))
+                // Create a new user
+                using (UserPrincipal user = new UserPrincipal(_context))
                 {
                     // Set user details and create the account
                     user.Name = userPrincipalName;
@@ -165,6 +169,55 @@ namespace ADAccountManager.Models
                     user.Description = firstName + " " + lastName;
                     user.Enabled = true;
                     user.Save();
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Create a new user account.
+        /// </summary>
+        /// <param name="firstName">Given name of the user.</param>
+        /// <param name="lastName">Surname of the user.</param>
+        /// <param name="userPrincipalName">User principal name, in the format "name.surname".</param>
+        /// <param name="upn">Domain the user should be added to.</param>
+        /// <returns>True if the user account creation is successful. False if the user account creation is unsuccessful.</returns>
+        public bool CreateUsersFromCsv(string csvPath)
+        {
+            try
+            {
+                // Check arguments for null or empty values
+                ArgumentNullException.ThrowIfNullOrEmpty(csvPath);
+
+                // Read records from CSV and add users
+                using (StreamReader reader = new StreamReader(csvPath))
+                {
+                    using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    {
+                        var records = csv.GetRecords<User>();
+
+                        foreach (var record in records)
+                        {
+                            using (UserPrincipal user = new UserPrincipal(_context))
+                            {
+                                user.Name = record.UserPrincipalName;
+                                user.GivenName = record.FirstName;
+                                user.Surname = record.LastName;
+                                user.UserPrincipalName = record.UserPrincipalName + "@" + record.Domain;
+                                user.SamAccountName = record.UserPrincipalName;
+                                user.DisplayName = record.FirstName + " " + record.LastName;
+                                user.Description = record.FirstName + " " + record.LastName;
+                                user.Enabled = true;
+                                user.Save();
+                            }
+                        }
+                    }
                 }
 
                 return true;

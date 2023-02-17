@@ -1,5 +1,4 @@
-﻿using Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Drawing.Text;
@@ -47,7 +46,7 @@ namespace ADAccountManager.Models
         {
             try
             {
-                // Check paramaters for nulls or empty strings
+                // Check argument for a null value
                 ArgumentNullException.ThrowIfNullOrEmpty(groupPrinicpalName);
 
                 // Check whether a user principal exists. Return false if the user principal does exist
@@ -58,6 +57,32 @@ namespace ADAccountManager.Models
                 }
 
                 return true;
+            }
+            catch (Exception e)
+            {
+                Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
+                return false;
+            }
+        }
+
+        public bool AddGroupMember(UserPrincipal user, string groupPrincipalName)
+        {
+            try
+            {
+                // Check arguments for null or empty values
+                ArgumentNullException.ThrowIfNull(user);
+                ArgumentNullException.ThrowIfNullOrEmpty(groupPrincipalName);
+
+                using (GroupPrincipal group = GetGroup(groupPrincipalName))
+                {
+                    if (group == null)
+                        return false;
+
+                    group.Members.Add(_context, IdentityType.UserPrincipalName, user.UserPrincipalName);
+                    group.Save();
+
+                    return true;
+                }
             }
             catch (Exception e)
             {

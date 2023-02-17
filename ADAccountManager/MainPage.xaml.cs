@@ -1,5 +1,7 @@
 ﻿using ADAccountManager.Models;
+using CsvHelper;
 using System.DirectoryServices.AccountManagement;
+using System.Globalization;
 
 namespace ADAccountManager;
 
@@ -15,9 +17,13 @@ public partial class MainPage : ContentPage
 	private void OnCounterClicked(object sender, EventArgs e)
 	{
 		ADUser user = new ADUser(_context);
+		user.CreateUsersFromCsv(@"C:\Users\netadmin\OneDrive - Ferrum High School\Desktop\users.csv");
 		//user.DeleteUser("riane.pot");
 		//user.CreateUser("Riane", "Pot", "riane.pot", "ferrum.local");
 		//user.Exists("riane.pot");
+
+		//ADGroup group = new ADGroup(new PrincipalContext(ContextType.Domain, "ferrum.local"));
+		//group.AddGroupMember(user.GetUser("riane.pot"), "StaffAccounts");
     }
 }
 
