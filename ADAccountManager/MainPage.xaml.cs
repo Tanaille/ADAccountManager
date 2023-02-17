@@ -17,7 +17,7 @@ public partial class MainPage : ContentPage
 	private void OnCounterClicked(object sender, EventArgs e)
 	{
 		ADUser user = new ADUser(_context);
-		user.CreateUsersFromCsvAsync(@"C:\Users\netadmin\OneDrive - Ferrum High School\Desktop\users.csv");
+		//user.CreateUsersFromCsvAsync(@"C:\Users\netadmin\OneDrive - Ferrum High School\Desktop\users.csv");
 		//user.DeleteUser("riane.pot");
 		//user.CreateUser("Riane", "Pot", "riane.pot", "ferrum.local");
 		//user.Exists("riane.pot");

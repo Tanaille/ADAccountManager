@@ -120,7 +120,7 @@ namespace ADAccountManager.Models
         /// <param name="userPrincipalName">User principal name, in the format "name.surname".</param>
         /// <param name="upn">Domain the user should be added to.</param>
         /// <returns>True if the user account creation is successful. False if the user account creation is unsuccessful.</returns>
-        public bool CreateUser(
+        public async Task<bool> CreateUserAsync(
             string firstName,
             string lastName,
             string userPrincipalName,
@@ -149,7 +149,7 @@ namespace ADAccountManager.Models
                 // Check whether a user principal exists
                 if (Exists(userPrincipalName))
                 {
-                    Application.Current.MainPage.DisplayAlert("Error: User already exists.",
+                    await Application.Current.MainPage.DisplayAlert("Error: User already exists.",
                             $"The user [{userPrincipalName}] already exists in the directory.",
                             "OK");
 
@@ -168,7 +168,7 @@ namespace ADAccountManager.Models
                     user.DisplayName = firstName + " " + lastName;
                     user.Description = firstName + " " + lastName;
                     user.Enabled = true;
-                    user.Save();
+                    await Task.Run(() => user.Save());
                 }
 
                 return true;
@@ -224,7 +224,7 @@ namespace ADAccountManager.Models
             }
             catch (Exception e)
             {
-                Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
+                await Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
                 return false;
             }
         }
