@@ -145,8 +145,8 @@ namespace ADAccountManager.Models
                     domain
                 };
 
-                if (!Utilities.ADPropertyValidator.ValidateParameters(parameters))
-                    return false;
+                //if (!Utilities.ADPropertyValidator.ValidateParameters(parameters))
+                    //return false;
 
                 // Check whether a user principal exists
                 if (Exists(userPrincipalName))
