@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ADAccountManager", "ADAccountManager\ADAccountManager.csproj", "{11C3BB41-8913-4AA5-A24A-6142B6A06C43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADAccountManagerTests", "ADAccountManagerTests\ADAccountManagerTests.csproj", "{FD81DC5D-FC7A-455A-9FFE-18DCB9484294}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ADAccountManagerTests", "ADAccountManagerTests\ADAccountManagerTests.csproj", "{FD81DC5D-FC7A-455A-9FFE-18DCB9484294}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

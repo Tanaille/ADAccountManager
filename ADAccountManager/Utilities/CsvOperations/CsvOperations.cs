@@ -29,7 +29,7 @@ public class CsvOperations
 
             foreach (var user in users)
             {
-                bool userCreated = await _userService.CreateUserAsync(user, context);
+                bool userCreated = await _userService.CreateUserAsync(user);
 
                 if (userCreated)
                 {
@@ -42,10 +42,9 @@ public class CsvOperations
 
             return true;
         }
-        catch (Exception e)
+        catch (PrincipalException e)
         {
-            await Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
-            return false;
+            throw new ApplicationException("An error occurred while creating a new user.", e);
         }
     }
 }
