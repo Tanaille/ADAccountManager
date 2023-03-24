@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using ADAccountManager.Utilities;
-using System.DirectoryServices.ActiveDirectory;
+﻿using System.DirectoryServices.AccountManagement;
 using CsvHelper;
 using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
-using System.Runtime.CompilerServices;
-
+    
 namespace ADAccountManager.Models
 {
     internal sealed class ADUser
@@ -232,57 +222,6 @@ namespace ADAccountManager.Models
             }
         }
 
-        /// <summary>
-        /// Create new user accounts from a CSV file.
-        /// </summary>
-        /// <param name="csvPath">The full file path of the CSV file.</param>
-        /// <returns>True if the user account creation is successful. False if the user account creation is unsuccessful.</returns>
-        public async Task<bool> CreateUsersFromCsvAsync(string csvPath)
-        {
-            try
-            {
-                // Check arguments for null or empty values, and whether the file exists
-                ArgumentException.ThrowIfNullOrEmpty(csvPath);
-
-                if (!File.Exists(csvPath))
-                    throw new FileNotFoundException("File not found: " + csvPath);
-                
-                // Read records from CSV and add users
-                using (StreamReader reader = new StreamReader(csvPath))
-                {
-                    using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                    {
-                        var records = csv.GetRecords<User>();
-
-                        foreach (var record in records)
-                        {
-                            using (UserPrincipal user = new UserPrincipal(_context))
-                            {
-                                user.Name = record.UserPrincipalName;
-                                user.GivenName = record.FirstName;
-                                user.Surname = record.LastName;
-                                user.UserPrincipalName = record.UserPrincipalName + "@" + record.Domain;
-                                user.SamAccountName = record.UserPrincipalName;
-                                user.DisplayName = record.FirstName + " " + record.LastName;
-                                user.Description = record.FirstName + " " + record.LastName;
-                                user.Enabled = true;
-                                await Task.Run(() => user.Save());
-
-                                // Add the user to the specified group
-                                ADGroup group = new ADGroup(new PrincipalContext(ContextType.Domain, "ferrum.local"));
-                                await Task.Run(() => group.AddGroupMember(user, "StaffAccounts"));
-                            }
-                        }
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                await Application.Current.MainPage.DisplayAlert("An error has occurred", e.Message, "OK");
-                return false;
-            }
-        }
+        
     }
 }
