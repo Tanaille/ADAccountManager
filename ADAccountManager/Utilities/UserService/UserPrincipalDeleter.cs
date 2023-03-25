@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace ADAccountManager.Utilities.UserService
 {
-    internal class UserDeleter : IUserDeleter
+    internal class UserPrincipalDeleter : IUserPrincipalDeleter
     {
         private readonly PrincipalContext _context;
-        private readonly IUserFinder _userFinder;
+        private readonly IUserPrincipalFinder _userFinder;
 
-        public UserDeleter(PrincipalContext context, IUserFinder userFinder)
+        public UserPrincipalDeleter(PrincipalContext context, IUserPrincipalFinder userFinder)
         {
             _context = context;
             _userFinder = userFinder;

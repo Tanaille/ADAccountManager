@@ -57,6 +57,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Resources\Config\" />
+	  <Folder Include="Utilities\PrincipalService\" />
 	</ItemGroup>
 
 	<ItemGroup>

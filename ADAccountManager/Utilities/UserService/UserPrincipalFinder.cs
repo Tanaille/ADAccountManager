@@ -3,11 +3,11 @@ using System.DirectoryServices.AccountManagement;
 
 namespace ADAccountManager.Utilities.UserService
 {
-    internal class UserFinder : IUserFinder
+    internal class UserPrincipalFinder : IUserPrincipalFinder
     {
         private readonly PrincipalContext _context;
 
-        public UserFinder(PrincipalContext context)
+        public UserPrincipalFinder(PrincipalContext context)
         {
             _context = context;
         }

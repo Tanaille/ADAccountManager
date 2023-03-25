@@ -6,14 +6,12 @@ using System.DirectoryServices.AccountManagement;
 public class CsvOperations
 {
     private readonly ICsvService _csvService;
-    private readonly IUserCreator _userCreator;
-    private readonly IGroupService _groupService;
+    private readonly IUserPrincipalCreator _userPricipalCreator;
 
-    internal CsvOperations(ICsvService csvService, IUserCreator userCreator, IGroupService groupService)
+    internal CsvOperations(ICsvService csvService, IUserPrincipalCreator userPricipalCreator)
     {
         _csvService = csvService;
-        _userCreator = userCreator;
-        _groupService = groupService;
+        _userPricipalCreator = userPricipalCreator;
     }
 
     public async Task<bool> CreateUsersFromCsvAsync(string csvPath, PrincipalContext context)
@@ -29,15 +27,10 @@ public class CsvOperations
 
             foreach (var user in users)
             {
-                bool userCreated = await _userCreator.CreateUserAsync(user);
+                bool userCreated = await _userPricipalCreator.CreateUserAsync(user);
 
-                if (userCreated)
-                {
-                    using (UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(context, user.UserPrincipalName))
-                    {
-                        await _groupService.AddUserToGroupAsync(userPrincipal, "StaffAccounts");
-                    }
-                }
+                if (!userCreated)
+                    return false;
             }
 
             return true;

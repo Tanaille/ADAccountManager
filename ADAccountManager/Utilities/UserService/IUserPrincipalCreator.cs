@@ -2,8 +2,8 @@
 
 namespace ADAccountManager.Utilities.UserService
 {
-    internal interface IUserDeleter
+    internal interface IUserPrincipalCreator
     {
-        Task<bool> DeleteUserAsync(string userPrincipalName);
+        Task<bool> CreateUserAsync(ADUser user);
     }
 }

@@ -3,7 +3,7 @@ using System.DirectoryServices.AccountManagement;
 
 namespace ADAccountManager.Utilities.UserService
 {
-    internal interface IUserFinder
+    internal interface IUserPrincipalFinder
     {
         Task<UserPrincipal> GetUserAsync(string userPrincipalName);
     }

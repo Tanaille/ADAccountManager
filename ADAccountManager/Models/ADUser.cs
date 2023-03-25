@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ADAccountManager.Models
 {
-    public class User
+    public class ADUser
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

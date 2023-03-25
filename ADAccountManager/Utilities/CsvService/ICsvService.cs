@@ -4,6 +4,6 @@ namespace ADAccountManager.Utilities.CsvService
 {
     internal interface ICsvService
     {
-        Task<IEnumerable<User>> ReadUsersFromCsvAsync(string csvPath);
+        Task<IEnumerable<ADUser>> ReadUsersFromCsvAsync(string csvPath);
     }
 }

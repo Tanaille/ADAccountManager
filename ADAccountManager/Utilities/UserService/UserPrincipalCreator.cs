@@ -3,11 +3,11 @@ using System.DirectoryServices.AccountManagement;
 
 namespace ADAccountManager.Utilities.UserService
 {
-    internal class UserCreator : IUserCreator
+    internal class UserPrincipalCreator : IUserPrincipalCreator
     {
         private readonly PrincipalContext _context;
 
-        public UserCreator(PrincipalContext context)
+        public UserPrincipalCreator(PrincipalContext context)
         {
             _context = context;
         }
@@ -17,7 +17,7 @@ namespace ADAccountManager.Utilities.UserService
         /// </summary>
         /// <param name="user">User object containing the user account information.</param>
         /// <returns>True if the user account creation is successful. False if the user account creation is unsuccessful.</returns>
-        public async Task<bool> CreateUserAsync(User user)
+        public async Task<bool> CreateUserAsync(ADUser user)
         {
             try
             {
