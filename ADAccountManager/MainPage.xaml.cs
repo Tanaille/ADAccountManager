@@ -35,23 +35,23 @@ public partial class MainPage : ContentPage
         };
 
 
-        IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(_context);
-        await userPrincipalCreator.CreateUserAsync(user);
+        //IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(_context);
+        //await userPrincipalCreator.CreateUserAsync(user);
 
-        IUserPrincipalFinder userPrincipalFinder = new UserPrincipalFinder(_context);
-        await userPrincipalFinder.GetUserAsync("test.user@ferrum.local");
+        //IUserPrincipalFinder userPrincipalFinder = new UserPrincipalFinder(_context);
+        //await userPrincipalFinder.GetUserAsync("test.user@ferrum.local");
 
-        IUserPrincipalDeleter userPrincipalDeleter = new UserPrincipalDeleter(_context, userPrincipalFinder);
-        await userPrincipalDeleter.DeleteUserAsync("test.user@ferrum.local");
+        //IUserPrincipalDeleter userPrincipalDeleter = new UserPrincipalDeleter(_context, userPrincipalFinder);
+        //await userPrincipalDeleter.DeleteUserAsync("test.user@ferrum.local");
 
-        IGroupPrincipalCreator groupPrincipalCreator = new GroupPrincipalCreator(_context);
-        await groupPrincipalCreator.CreateGroupPrincipalAsync(group);
+        //IGroupPrincipalCreator groupPrincipalCreator = new GroupPrincipalCreator(_context);
+        //await groupPrincipalCreator.CreateGroupPrincipalAsync(group);
 
-        IGroupPrincipalFinder groupPrincipalFinder = new GroupPrincipalFinder(_context);
-        await groupPrincipalFinder.GetGroupPrincipalAsync("TestGroup-FULL");
+        //IGroupPrincipalFinder groupPrincipalFinder = new GroupPrincipalFinder(_context);
+        //await groupPrincipalFinder.GetGroupPrincipalAsync("TestGroup-FULL");
 
-        IGroupPrincipalDeleter groupPrincipalDeleter = new GroupPrincipalDeleter(_context, groupPrincipalFinder);
-        await groupPrincipalDeleter.DeleteGroupPrincipalAsync("TestGroup-FULL");
+        //IGroupPrincipalDeleter groupPrincipalDeleter = new GroupPrincipalDeleter(_context, groupPrincipalFinder);
+        //await groupPrincipalDeleter.DeleteGroupPrincipalAsync("TestGroup-FULL");
     }
 
     private void TestClick(object sender, EventArgs e)

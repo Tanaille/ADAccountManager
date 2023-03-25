@@ -1,7 +1,6 @@
 ﻿using ADAccountManager.Models;
 using System.DirectoryServices.AccountManagement;
 
-
 namespace ADAccountManager.Utilities.GroupService
 {
     internal class GroupPrincipalCreator : IGroupPrincipalCreator
