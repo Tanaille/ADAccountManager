@@ -32,10 +32,15 @@ public partial class MainPage : ContentPage
             UserPrincipalName = "test.user"
         };
 
-        UserService userService = new UserService(_context);
-        await userService.CreateUserAsync(user);
 
+        //IUserCreator userCreator = new UserCreator(_context);
+        //await userCreator.CreateUserAsync(user);
 
+        //IUserFinder userFinder = new UserFinder(_context);
+        //await userFinder.GetUserAsync("test.user@ferrum.local");
+
+        //IUserDeleter userDeleter = new UserDeleter(_context, userFinder);
+        //await userDeleter.DeleteUserAsync("test.user@ferrum.local");
     }
 
     private void TestClick(object sender, EventArgs e)

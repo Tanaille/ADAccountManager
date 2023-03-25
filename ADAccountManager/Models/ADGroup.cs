@@ -21,7 +21,7 @@ namespace ADAccountManager.Models
         /// <summary>
         /// Retrieves a group principal from the directory.
         /// </summary>
-        /// <param name="groupName">Name of the group principal to be retrieved.</param>
+        /// <param name="groupPrinicpalName">Name of the group principal to be retrieved.</param>
         /// <returns>The group principal named in the parameter. Returns null if the group is not found.</returns>
         public GroupPrincipal GetGroup(string groupPrinicpalName)
         {

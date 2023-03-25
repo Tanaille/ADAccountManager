@@ -18,9 +18,9 @@ namespace ADAccountManager.Utilities.GroupService
                 await Task.Run(() => group.AddGroupMember(user, groupName));
                 return true;
             }
-            catch (Exception)
+            catch (PrincipalException e)
             {
-                return false;
+                throw new ApplicationException("An error occurred while adding a user to a group.", e);
             }
         }
     }

@@ -4,6 +4,3 @@
 // a specific target and scoped to a namespace, type, member, etc.
 
 using System.Diagnostics.CodeAnalysis;
-
-[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:ADAccountManager.Utilities.UserService.UserService.CreateUserAsync(ADAccountManager.Models.User,System.DirectoryServices.AccountManagement.PrincipalContext)~System.Threading.Tasks.Task{System.Boolean}")]
-[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:ADAccountManager.Utilities.UserService.UserService.CreateUserAsync(ADAccountManager.Models.User)~System.Threading.Tasks.Task{System.Boolean}")]

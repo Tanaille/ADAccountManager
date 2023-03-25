@@ -6,13 +6,13 @@ using System.DirectoryServices.AccountManagement;
 public class CsvOperations
 {
     private readonly ICsvService _csvService;
-    private readonly IUserService _userService;
+    private readonly IUserCreator _userCreator;
     private readonly IGroupService _groupService;
 
-    internal CsvOperations(ICsvService csvService, IUserService userService, IGroupService groupService)
+    internal CsvOperations(ICsvService csvService, IUserCreator userCreator, IGroupService groupService)
     {
         _csvService = csvService;
-        _userService = userService;
+        _userCreator = userCreator;
         _groupService = groupService;
     }
 
@@ -29,7 +29,7 @@ public class CsvOperations
 
             foreach (var user in users)
             {
-                bool userCreated = await _userService.CreateUserAsync(user);
+                bool userCreated = await _userCreator.CreateUserAsync(user);
 
                 if (userCreated)
                 {
