@@ -18,14 +18,14 @@ namespace ADAccountManager.Utilities.UserService
         /// </summary>
         /// <param name="userPrincipalName">Principal name (such as name.surname) of the user to be deleted.</param>
         /// <returns>True if the deletion is successful. False if the deletion is unsuccessful.</returns>
-        public async Task<bool> DeleteUserAsync(string userPrincipalName)
+        public async Task<bool> DeleteUserPrincipalAsync(string userPrincipalName)
         {
             try
             {
                 // Check argument for a null or empty value
                 ArgumentException.ThrowIfNullOrEmpty(userPrincipalName);
 
-                using var user = await _userFinder.GetUserAsync(userPrincipalName);
+                using var user = await _userFinder.GetUserPrincipalAsync(userPrincipalName);
                 
                 if (user is null)
                     return false;

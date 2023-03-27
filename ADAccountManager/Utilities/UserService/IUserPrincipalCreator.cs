@@ -4,6 +4,6 @@ namespace ADAccountManager.Utilities.UserService
 {
     internal interface IUserPrincipalCreator
     {
-        Task<bool> CreateUserAsync(ADUser user);
+        Task<bool> CreateUserPrincipalAsync(ADUser user);
     }
 }

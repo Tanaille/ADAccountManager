@@ -34,9 +34,33 @@ namespace ADAccountManager.Utilities.GroupService
 
                 return true;
             }
-            catch (PrincipalException e)
+            catch (PrincipalServerDownException e)
             {
-                throw new ApplicationException("An error occurred while deleting a user.", e);
+                e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
+                    "Check connectivity to the server.");
+
+                throw;
+            }
+            catch (PrincipalOperationException e)
+            {
+                e.Data.Add("UserMessage", "An error occurred while updating the directory store (DELETE operation failed). " +
+                    "See the log file for more information.");
+
+                throw;
+            }
+            catch (MultipleMatchesException e)
+            {
+                e.Data.Add("UserMessage", "More than one matching group principals were found. Contact your " +
+                    "Active Directory administrator to review the existing groups and remove duplicates.");
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                e.Data.Add("UserMessage", "An error occurred while retrieving the group principal from Active Directory. " +
+                    "See the log file for more information.");
+
+                throw;
             }
         }
     }

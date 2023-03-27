@@ -17,7 +17,7 @@ namespace ADAccountManager.Utilities.UserService
         /// </summary>
         /// <param name="user">User object containing the user account information.</param>
         /// <returns>True if the user account creation is successful. False if the user account creation is unsuccessful.</returns>
-        public async Task<bool> CreateUserAsync(ADUser user)
+        public async Task<bool> CreateUserPrincipalAsync(ADUser user)
         {
             try
             {

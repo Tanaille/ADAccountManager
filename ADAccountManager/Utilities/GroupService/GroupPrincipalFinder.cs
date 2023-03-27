@@ -27,9 +27,25 @@ namespace ADAccountManager.Utilities.GroupService
 
                 return groupPrincipal;
             }
-            catch (PrincipalOperationException e)
+            catch (PrincipalServerDownException e)
             {
-                throw new ApplicationException("An error occurred while retrieving the user principal.", e);
+                e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
+                    "Check connectivity to the server.");
+
+                throw;
+            }
+            catch (MultipleMatchesException e)
+            {
+                e.Data.Add("UserMessage", "More than one matching group principals were found. Contact your " +
+                    "Active Directory administrator to review the existing groups and remvoe duplicates.");
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                e.Data.Add("UserMessage", "An error occurred while retrieving the group principal from Active Directory.");
+
+                throw;
             }
         }
     }

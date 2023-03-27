@@ -5,6 +5,6 @@ namespace ADAccountManager.Utilities.UserService
 {
     internal interface IUserPrincipalFinder
     {
-        Task<UserPrincipal> GetUserAsync(string userPrincipalName);
+        Task<UserPrincipal> GetUserPrincipalAsync(string userPrincipalName);
     }
 }

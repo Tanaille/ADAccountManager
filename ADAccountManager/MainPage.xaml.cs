@@ -16,7 +16,7 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
 
-        var config = _configService.ReadConfig("C:\\Users\\Tanaille\\source\\repos\\Tanaille\\ADAccountManager\\ADAccountManager\\Resources\\Config\\appsettings.json");
+        var config = _configService.ReadConfig("C:\\Users\\netadmin\\source\\repos\\ADAccountManager\\ADAccountManager\\Resources\\Config\\appsettings.json");
         _context = new PrincipalContext(ContextType.Domain, config.DomainName, config.DefaultDomainOU, config.DomainUser, config.DomainPassword);
     }
 
@@ -44,11 +44,8 @@ public partial class MainPage : ContentPage
         //IUserPrincipalDeleter userPrincipalDeleter = new UserPrincipalDeleter(_context, userPrincipalFinder);
         //await userPrincipalDeleter.DeleteUserAsync("test.user@ferrum.local");
 
-        //IGroupPrincipalCreator groupPrincipalCreator = new GroupPrincipalCreator(_context);
-        //await groupPrincipalCreator.CreateGroupPrincipalAsync(group);
-
-        //IGroupPrincipalFinder groupPrincipalFinder = new GroupPrincipalFinder(_context);
-        //await groupPrincipalFinder.GetGroupPrincipalAsync("TestGroup-FULL");
+        IGroupPrincipalCreator groupPrincipalCreator = new GroupPrincipalCreator(_context);
+        await groupPrincipalCreator.CreateGroupPrincipalAsync(group);
 
         //IGroupPrincipalDeleter groupPrincipalDeleter = new GroupPrincipalDeleter(_context, groupPrincipalFinder);
         //await groupPrincipalDeleter.DeleteGroupPrincipalAsync("TestGroup-FULL");

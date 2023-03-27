@@ -26,7 +26,7 @@ public class CsvOperations
 
             foreach (var user in users)
             {
-                bool userCreated = await _userPricipalCreator.CreateUserAsync(user);
+                bool userCreated = await _userPricipalCreator.CreateUserPrincipalAsync(user);
 
                 if (!userCreated)
                     return false;
