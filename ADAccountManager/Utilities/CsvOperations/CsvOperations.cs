@@ -1,8 +1,10 @@
-﻿using ADAccountManager.Utilities.CsvService;
+﻿using ADAccountManager.Models;
+using ADAccountManager.Utilities.CsvOperations;
+using ADAccountManager.Utilities.CsvService;
 using ADAccountManager.Utilities.UserService;
 using System.DirectoryServices.AccountManagement;
 
-public class CsvOperations
+public class CsvOperations : ICsvOperations
 {
     private readonly ICsvService _csvService;
     private readonly IUserPrincipalCreator _userPricipalCreator;
@@ -13,30 +15,58 @@ public class CsvOperations
         _userPricipalCreator = userPricipalCreator;
     }
 
-    public async Task<bool> CreateUsersFromCsvAsync(string csvPath, PrincipalContext context)
+    /// <summary>
+    /// Creates one or more user principals from a CSV file.
+    /// </summary>
+    /// <param name="csvPath">File path of the CSV file.</param>
+    /// <returns>A list of type ADUser containing the user principals that were not successfully created.</returns>
+    public async Task<List<ADUser>> CreateUserPrincipalsFromCsvAsync(string csvPath)
     {
         try
         {
-            ArgumentException.ThrowIfNullOrEmpty(csvPath);
-
             if (!File.Exists(csvPath))
                 throw new FileNotFoundException("File not found: " + csvPath);
 
-            var users = await _csvService.ReadUsersFromCsvAsync(csvPath);
+            List<ADUser> notCreatedUserPrincipals = new List<ADUser>();
 
-            foreach (var user in users)
+            var userPrincipals = await _csvService.ReadUsersFromCsvAsync(csvPath);
+
+            foreach (var userPrincipal in userPrincipals)
             {
-                bool userCreated = await _userPricipalCreator.CreateUserPrincipalAsync(user);
+                bool userCreated = await _userPricipalCreator.CreateUserPrincipalAsync(userPrincipal);
 
                 if (!userCreated)
-                    return false;
+                    notCreatedUserPrincipals.Add(userPrincipal);
             }
 
-            return true;
+            return notCreatedUserPrincipals;
         }
-        catch (PrincipalException e)
+        catch (PrincipalOperationException e)
         {
-            throw new ApplicationException("An error occurred while creating a new user.", e);
+            e.Data.Add("UserMessage", "An error occurred while updating the directory store (CREATE operation failed). " +
+                "See the log file for more information.");
+
+            throw;
+        }
+        catch (PrincipalExistsException e)
+        {
+            e.Data.Add("UserMessage", "The user principal already exists in the directory.");
+
+            throw;
+        }
+        catch (PrincipalServerDownException e)
+        {
+            e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
+                "Check connectivity to the server.");
+
+            throw;
+        }
+        catch (Exception e)
+        {
+            e.Data.Add("UserMessage", "An error occurred while adding the user principal to Active Directory. " +
+                "See the log file for more information.");
+
+            throw;
         }
     }
 }
