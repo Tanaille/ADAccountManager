@@ -1,6 +1,7 @@
 ﻿using ADAccountManager.Models;
 using ADAccountManager.Utilities.CsvOperations;
 using ADAccountManager.Utilities.CsvService;
+using ADAccountManager.Utilities.GroupService;
 using ADAccountManager.Utilities.UserService;
 using System.DirectoryServices.AccountManagement;
 
@@ -8,11 +9,13 @@ public class CsvOperations : ICsvOperations
 {
     private readonly ICsvService _csvService;
     private readonly IUserPrincipalCreator _userPricipalCreator;
+    private readonly PrincipalContext _context;
 
-    internal CsvOperations(ICsvService csvService, IUserPrincipalCreator userPricipalCreator)
+    internal CsvOperations(ICsvService csvService, IUserPrincipalCreator userPricipalCreator, PrincipalContext context)
     {
         _csvService = csvService;
         _userPricipalCreator = userPricipalCreator;
+        _context = context;
     }
 
     /// <summary>
@@ -33,7 +36,10 @@ public class CsvOperations : ICsvOperations
 
             foreach (var userPrincipal in userPrincipals)
             {
-                bool userCreated = await _userPricipalCreator.CreateUserPrincipalAsync(userPrincipal);
+                bool userCreated = false;
+
+                if (!await UserPrincipalExistenceCheck.Exists(userPrincipal.UserPrincipalName, _context))
+                    userCreated = await _userPricipalCreator.CreateUserPrincipalAsync(userPrincipal);
 
                 if (!userCreated)
                     notCreatedUserPrincipals.Add(userPrincipal);

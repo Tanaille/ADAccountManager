@@ -38,11 +38,21 @@ public partial class MainPage : ContentPage
 
         IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(_context);
         ICsvService csvService = new CsvService();
-        ICsvOperations csvOperations = new CsvOperations(csvService, userPrincipalCreator);
+        ICsvOperations csvOperations = new CsvOperations(csvService, userPrincipalCreator, _context);
 
         try
         {
-            await csvOperations.CreateUserPrincipalsFromCsvAsync("C:\\Users\\netadmin\\OneDrive - Ferrum High School\\Desktop\\users.csv");
+            var nonCreatedUserPrincipals = await csvOperations.CreateUserPrincipalsFromCsvAsync("C:\\Users\\netadmin\\OneDrive - Ferrum High School\\Desktop\\users.csv");
+            
+            if (nonCreatedUserPrincipals.Count > 0)
+            {
+                string principals = string.Empty;
+
+                foreach (var userPrincipal in nonCreatedUserPrincipals)
+                    principals += (userPrincipal.UserPrincipalName + "\n");
+
+                await DisplayAlert("Notice", "Some user principals could not be created:\n\n" + principals, "OK");
+            }
         }
         catch (Exception ex)
         {
