@@ -17,14 +17,11 @@ namespace ADAccountManager.Utilities.GroupService
         /// Delete an existing group.
         /// </summary>
         /// <param name="groupPrincipalName">Group principal name (such as group.name) of the group to be deleted.</param>
-        /// <returns>True if the deletion is successful. False if the deletion is unsuccessful.</returns>
+        /// <returns>True if the deletion is successful. False if the deletion is unsuccessful (the group does not exist).</returns>
         public async Task<bool> DeleteGroupPrincipalAsync(string groupPrincipalName)
         {
             try
             {
-                // Check argument for a null or empty value
-                ArgumentException.ThrowIfNullOrEmpty(groupPrincipalName);
-
                 using var groupPrincipal = await _groupPrincipalFinder.GetGroupPrincipalAsync(groupPrincipalName);
 
                 if (groupPrincipal is null)

@@ -12,11 +12,17 @@ namespace ADAccountManager.Utilities.GroupService
             _context = context;
         }
 
+        /// <summary>
+        /// Creates a new Active Directory group principal.
+        /// </summary>
+        /// <param name="group">The ADGroup object that will be used to create the group.</param>
+        /// <returns>True if group creation is successful, false if group creation is unsuccessful (group already exists, 
+        /// or ADGroup object is null).</returns>
         public async Task<bool> CreateGroupPrincipalAsync(ADGroup group)
         {
             try
             {
-                if (await GroupPrincipalExistenceCheck.Exists(group.Name, _context))
+                if (group is null || await GroupPrincipalExistenceCheck.Exists(group.Name, _context))
                     return false;
 
                 using GroupPrincipal groupPrincipal = new GroupPrincipal(_context)

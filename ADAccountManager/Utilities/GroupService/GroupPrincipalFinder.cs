@@ -20,9 +20,6 @@ namespace ADAccountManager.Utilities.GroupService
         {
             try
             {
-                // Check argument for a null or empty value
-                ArgumentException.ThrowIfNullOrEmpty(groupPrincipalName, nameof(groupPrincipalName));
-
                 GroupPrincipal groupPrincipal = await Task.Run(() => GroupPrincipal.FindByIdentity(_context, groupPrincipalName));
 
                 return groupPrincipal;
