@@ -14,17 +14,14 @@ namespace ADAccountManager.Utilities.UserService
         }
 
         /// <summary>
-        /// Delete an existing user.
+        /// Delete an existing user principal from the directory.
         /// </summary>
-        /// <param name="userPrincipalName">Principal name (such as name.surname) of the user to be deleted.</param>
-        /// <returns>True if the deletion is successful. False if the deletion is unsuccessful.</returns>
+        /// <param name="userPrincipalName">User principal name (such as name.surname) of the user to be deleted.</param>
+        /// <returns>True if the deletion is successful. False if the deletion is unsuccessful (user principal does not exist).</returns>
         public async Task<bool> DeleteUserPrincipalAsync(string userPrincipalName)
         {
             try
             {
-                // Check argument for a null or empty value
-                ArgumentException.ThrowIfNullOrEmpty(userPrincipalName);
-
                 using var user = await _userFinder.GetUserPrincipalAsync(userPrincipalName);
                 
                 if (user is null)
@@ -34,9 +31,33 @@ namespace ADAccountManager.Utilities.UserService
 
                 return true;
             }
-            catch (PrincipalException e)
+            catch (PrincipalOperationException e)
             {
-                throw new ApplicationException("An error occurred while deleting a user.", e);
+                e.Data.Add("UserMessage", "An error occurred while updating the directory store (DELETE operation failed). " +
+                    "See the log file for more information.");
+
+                throw;
+            }
+            catch (PrincipalServerDownException e)
+            {
+                e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
+                    "Check connectivity to the server.");
+
+                throw;
+            }
+            catch (MultipleMatchesException e)
+            {
+                e.Data.Add("UserMessage", "More than one matching user principals were found. Contact your " +
+                    "Active Directory administrator to review the existing groups and remove duplicates.");
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                e.Data.Add("UserMessage", "An error occurred while adding the user principal to Active Directory. " +
+                    "See the log file for more information.");
+
+                throw;
             }
         }
     }

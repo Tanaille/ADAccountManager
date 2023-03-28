@@ -13,14 +13,18 @@ namespace ADAccountManager.Utilities.UserService
         }
 
         /// <summary>
-        /// Create a new user account.
+        /// Create a new user principal object in the directory.
         /// </summary>
-        /// <param name="user">User object containing the user account information.</param>
-        /// <returns>True if the user account creation is successful. False if the user account creation is unsuccessful.</returns>
+        /// <param name="user">User principal object containing the user account information.</param>
+        /// <returns>True if the user principal creation is successful. False if the user account
+        /// creation is unsuccessful (ADUser object is null).</returns>
         public async Task<bool> CreateUserPrincipalAsync(ADUser user)
         {
             try
             {
+                if (user is null)
+                    return false;
+
                 using UserPrincipal userPrincipal = new UserPrincipal(_context)
                 {
                     Name = user.UserPrincipalName,
@@ -39,7 +43,30 @@ namespace ADAccountManager.Utilities.UserService
             }
             catch (PrincipalOperationException e)
             {
-                throw new ApplicationException("An error occurred while creating a new user.", e);
+                e.Data.Add("UserMessage", "An error occurred while updating the directory store (CREATE operation failed). " +
+                    "See the log file for more information.");
+
+                throw;
+            }
+            catch (PrincipalServerDownException e)
+            {
+                e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
+                    "Check connectivity to the server.");
+
+                throw;
+            }
+            catch (PrincipalExistsException e)
+            {
+                e.Data.Add("UserMessage", "The user principal already exists in the directory.");
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                e.Data.Add("UserMessage", "An error occurred while adding the user principal to Active Directory. " +
+                    "See the log file for more information.");
+
+                throw;
             }
         }
     }

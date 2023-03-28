@@ -10,7 +10,7 @@ namespace ADAccountManager.Utilities.GroupService
     internal static class GroupPrincipalExistenceCheck
     {
         /// <summary>
-        /// Checks wheteher a group principal exists within the directory. 
+        /// Checks whether a group principal exists within the directory. 
         /// </summary>
         /// <param name="groupPrincipalName">Name of the group principal to be checked.</param>
         /// <param name="context">The domain context to searched.</param>

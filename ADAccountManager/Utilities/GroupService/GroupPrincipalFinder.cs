@@ -12,7 +12,7 @@ namespace ADAccountManager.Utilities.GroupService
         }
 
         /// <summary>
-        /// Get a group principal from the directory.
+        /// Retrieve a group principal from the directory.
         /// </summary>
         /// <param name="groupPrincipalName">Principal name (such as groupe.name) of the group to be retrieved.</param>
         /// <returns>The group principal object specified in the parameter.</returns>
@@ -20,9 +20,7 @@ namespace ADAccountManager.Utilities.GroupService
         {
             try
             {
-                GroupPrincipal groupPrincipal = await Task.Run(() => GroupPrincipal.FindByIdentity(_context, groupPrincipalName));
-
-                return groupPrincipal;
+                return await Task.Run(() => GroupPrincipal.FindByIdentity(_context, groupPrincipalName));
             }
             catch (PrincipalServerDownException e)
             {

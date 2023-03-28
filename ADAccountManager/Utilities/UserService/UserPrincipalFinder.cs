@@ -13,20 +13,15 @@ namespace ADAccountManager.Utilities.UserService
         }
 
         /// <summary>
-        /// Get a user principal from the directory.
+        /// Retrieve a user principal from the directory.
         /// </summary>
         /// <param name="userPrincipalName">Principal name (such as name.surname) of the user to be retrieved.</param>
-        /// <returns>The user principal specified in the parameter.</returns>
+        /// <returns>The user principal object specified in the parameter.</returns>
         public async Task<UserPrincipal> GetUserPrincipalAsync(string userPrincipalName)
         {
             try
             {
-                // Check argument for a null or empty value
-                ArgumentException.ThrowIfNullOrEmpty(userPrincipalName, nameof(userPrincipalName));
-
-                UserPrincipal userPrincipal = await Task.Run(() => UserPrincipal.FindByIdentity(_context, userPrincipalName));
-
-                return userPrincipal;
+                return await Task.Run(() => UserPrincipal.FindByIdentity(_context, userPrincipalName));
             }
             catch (PrincipalServerDownException e)
             {

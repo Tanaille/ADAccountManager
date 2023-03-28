@@ -10,6 +10,12 @@ namespace ADAccountManager.Utilities.GroupService
 {
     internal static class UserPrincipalExistenceCheck
     {
+        /// <summary>
+        /// Checks whether a user principal exists within the directory. 
+        /// </summary>
+        /// <param name="userPrincipalName">Name of the user principal to be checked.</param>
+        /// <param name="context">The domain context to searched.</param>
+        /// <returns>True if the user principal exists, false if it does not exist.</returns>
         internal static async Task<bool> Exists(string userPrincipalName, PrincipalContext context)
         {
             try
@@ -17,10 +23,7 @@ namespace ADAccountManager.Utilities.GroupService
                 IUserPrincipalFinder userPrincipalFinder = new UserPrincipalFinder(context);
                 using UserPrincipal userPrincipal = await userPrincipalFinder.GetUserPrincipalAsync(userPrincipalName);
 
-                if (userPrincipal is not null)
-                    return true;
-
-                return false;
+                return userPrincipal is not null;
             }
             catch (PrincipalServerDownException e)
             {
