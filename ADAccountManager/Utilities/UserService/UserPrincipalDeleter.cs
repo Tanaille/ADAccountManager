@@ -33,29 +33,33 @@ namespace ADAccountManager.Utilities.UserService
             }
             catch (PrincipalOperationException e)
             {
-                e.Data.Add("UserMessage", "An error occurred while updating the directory store (DELETE operation failed). " +
-                    "See the log file for more information.");
+                if (!e.Data.Contains("UserMessage"))
+                    e.Data.Add("UserMessage", "An error occurred while updating the directory store (DELETE operation failed). " +
+                        "See the log file for more information.");
 
                 throw;
             }
             catch (PrincipalServerDownException e)
             {
-                e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
-                    "Check connectivity to the server.");
+                if (!e.Data.Contains("UserMessage"))
+                    e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
+                        "Check connectivity to the server.");
 
                 throw;
             }
             catch (MultipleMatchesException e)
             {
-                e.Data.Add("UserMessage", "More than one matching user principals were found. Contact your " +
-                    "Active Directory administrator to review the existing groups and remove duplicates.");
+                if (!e.Data.Contains("UserMessage"))
+                    e.Data.Add("UserMessage", "More than one matching user principals were found. Contact your " +
+                        "Active Directory administrator to review the existing groups and remove duplicates.");
 
                 throw;
             }
             catch (Exception e)
             {
-                e.Data.Add("UserMessage", "An error occurred while adding the user principal to Active Directory. " +
-                    "See the log file for more information.");
+                if (!e.Data.Contains("UserMessage"))
+                    e.Data.Add("UserMessage", "An error occurred while adding the user principal to Active Directory. " +
+                        "See the log file for more information.");
 
                 throw;
             }

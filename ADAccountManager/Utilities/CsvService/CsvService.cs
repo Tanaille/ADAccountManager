@@ -18,15 +18,17 @@ namespace ADAccountManager.Utilities.CsvService
                 if (!File.Exists(csvPath))
                     throw new FileNotFoundException("The specified file was not found: " + csvPath);
 
-                using StreamReader reader = new StreamReader(csvPath);
+                using FileStream fileStream = new FileStream(csvPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using StreamReader reader = new StreamReader(fileStream);
                 using CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
                 return await Task.Run(() => csv.GetRecords<ADUser>().ToList());
             }
             catch (IOException e)
             {
-                e.Data.Add("UserMessage", "An error occurred while attempting to read from the file. " +
-                    "See the log file for more information.");
+                if (!e.Data.Contains("UserMessage"))
+                    e.Data.Add("UserMessage", "An error occurred while attempting to read from the file. " +
+                        "See the log file for more information.");
 
                 throw;
             }

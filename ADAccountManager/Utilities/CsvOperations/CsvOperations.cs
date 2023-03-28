@@ -43,28 +43,32 @@ public class CsvOperations : ICsvOperations
         }
         catch (PrincipalOperationException e)
         {
-            e.Data.Add("UserMessage", "An error occurred while updating the directory store (CREATE operation failed). " +
-                "See the log file for more information.");
+            if (!e.Data.Contains("UserMessage"))
+                e.Data.Add("UserMessage", "An error occurred while updating the directory store (CREATE operation failed). " +
+                    "See the log file for more information.");
 
             throw;
         }
         catch (PrincipalExistsException e)
         {
-            e.Data.Add("UserMessage", "The user principal already exists in the directory.");
+            if (!e.Data.Contains("UserMessage"))
+                e.Data.Add("UserMessage", "The user principal already exists in the directory.");
 
             throw;
         }
         catch (PrincipalServerDownException e)
         {
-            e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
-                "Check connectivity to the server.");
+            if (!e.Data.Contains("UserMessage"))
+                e.Data.Add("UserMessage", "The Active Directory server could not be reached. " +
+                    "Check connectivity to the server.");
 
             throw;
         }
         catch (Exception e)
         {
-            e.Data.Add("UserMessage", "An error occurred while adding the user principal to Active Directory. " +
-                "See the log file for more information.");
+            if (!e.Data.Contains("UserMessage"))
+                e.Data.Add("UserMessage", "An error occurred while adding the user principal to Active Directory. " +
+                    "See the log file for more information.");
 
             throw;
         }

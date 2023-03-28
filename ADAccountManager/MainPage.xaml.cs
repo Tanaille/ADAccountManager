@@ -1,6 +1,8 @@
 ﻿using ADAccountManager.Models;
 using ADAccountManager.Utilities;
 using ADAccountManager.Utilities.ConfigService;
+using ADAccountManager.Utilities.CsvOperations;
+using ADAccountManager.Utilities.CsvService;
 using ADAccountManager.Utilities.GroupService;
 using ADAccountManager.Utilities.UserService;
 using System.DirectoryServices.AccountManagement;
@@ -34,21 +36,19 @@ public partial class MainPage : ContentPage
             Name = "TestGroup-FULL",
         };
 
+        IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(_context);
+        ICsvService csvService = new CsvService();
+        ICsvOperations csvOperations = new CsvOperations(csvService, userPrincipalCreator);
 
-        //IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(_context);
-        //await userPrincipalCreator.CreateUserAsync(user);
-
-        //IUserPrincipalFinder userPrincipalFinder = new UserPrincipalFinder(_context);
-        //await userPrincipalFinder.GetUserAsync("test.user@ferrum.local");
-
-        //IUserPrincipalDeleter userPrincipalDeleter = new UserPrincipalDeleter(_context, userPrincipalFinder);
-        //await userPrincipalDeleter.DeleteUserAsync("test.user@ferrum.local");
-
-        IGroupPrincipalCreator groupPrincipalCreator = new GroupPrincipalCreator(_context);
-        await groupPrincipalCreator.CreateGroupPrincipalAsync(group);
-
-        //IGroupPrincipalDeleter groupPrincipalDeleter = new GroupPrincipalDeleter(_context, groupPrincipalFinder);
-        //await groupPrincipalDeleter.DeleteGroupPrincipalAsync("TestGroup-FULL");
+        try
+        {
+            await csvOperations.CreateUserPrincipalsFromCsvAsync("C:\\Users\\netadmin\\OneDrive - Ferrum High School\\Desktop\\users.csv");
+        }
+        catch (Exception ex)
+        {
+            object userMessage = ex.Data["UserMessage"];
+            await DisplayAlert("Error: " + ex.Message, userMessage.ToString(), "OK");
+        }
     }
 
     private void TestClick(object sender, EventArgs e)
