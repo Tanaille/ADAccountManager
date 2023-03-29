@@ -42,16 +42,26 @@ public partial class MainPage : ContentPage
 
         try
         {
-            var nonCreatedUserPrincipals = await csvOperations.CreateUserPrincipalsFromCsvAsync("C:\\Users\\netadmin\\OneDrive - Ferrum High School\\Desktop\\users.csv");
+            var result = await csvOperations.CreateUserPrincipalsFromCsvAsync("C:\\Users\\netadmin\\OneDrive - Ferrum High School\\Desktop\\users.csv");
             
-            if (nonCreatedUserPrincipals.Count > 0)
+            if (result.NotCreatedUserPrincipals.Count > 0)
             {
                 string principals = string.Empty;
 
-                foreach (var userPrincipal in nonCreatedUserPrincipals)
+                foreach (var userPrincipal in result.NotCreatedUserPrincipals)
                     principals += (userPrincipal.UserPrincipalName + "\n");
 
-                await DisplayAlert("Notice", "Some user principals could not be created:\n\n" + principals, "OK");
+                await DisplayAlert("Not created users", "The following user principals have not been created:\n\n" + principals, "OK");
+            }
+
+            if (result.CreatedUserPrincipals.Count > 0)
+            {
+                string principals = string.Empty;
+
+                foreach (var userPrincipal in result.CreatedUserPrincipals)
+                    principals += (userPrincipal.UserPrincipalName + "\n");
+
+                await DisplayAlert("Created users", "The following user principals have been created:\n\n" + principals, "OK");
             }
         }
         catch (Exception ex)

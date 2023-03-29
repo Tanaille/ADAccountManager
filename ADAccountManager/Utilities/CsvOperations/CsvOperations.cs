@@ -23,14 +23,14 @@ public class CsvOperations : ICsvOperations
     /// </summary>
     /// <param name="csvPath">File path of the CSV file.</param>
     /// <returns>A list of type ADUser containing the user principals that were not successfully created.</returns>
-    public async Task<List<ADUser>> CreateUserPrincipalsFromCsvAsync(string csvPath)
+    public async Task<CsvUserPrincipalCreationResult> CreateUserPrincipalsFromCsvAsync(string csvPath)
     {
         try
         {
             if (!File.Exists(csvPath))
                 throw new FileNotFoundException("File not found: " + csvPath);
 
-            List<ADUser> notCreatedUserPrincipals = new List<ADUser>();
+            CsvUserPrincipalCreationResult result = new CsvUserPrincipalCreationResult(new List<ADUser> { }, new List<ADUser> { });
 
             var userPrincipals = await _csvService.ReadUsersFromCsvAsync(csvPath);
 
@@ -41,11 +41,14 @@ public class CsvOperations : ICsvOperations
                 if (!await UserPrincipalExistenceCheck.Exists(userPrincipal.UserPrincipalName, _context))
                     userCreated = await _userPricipalCreator.CreateUserPrincipalAsync(userPrincipal);
 
+                if (userCreated)
+                    result.CreatedUserPrincipals.Add(userPrincipal);
+
                 if (!userCreated)
-                    notCreatedUserPrincipals.Add(userPrincipal);
+                    result.NotCreatedUserPrincipals.Add(userPrincipal);
             }
 
-            return notCreatedUserPrincipals;
+            return result;
         }
         catch (PrincipalOperationException e)
         {

@@ -5,6 +5,6 @@ namespace ADAccountManager.Utilities.CsvOperations
 {
     internal interface ICsvOperations
     {
-        Task<List<ADUser>> CreateUserPrincipalsFromCsvAsync(string csvPath);
+        Task<CsvUserPrincipalCreationResult> CreateUserPrincipalsFromCsvAsync(string csvPath);
     }
 }
