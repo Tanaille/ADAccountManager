@@ -25,7 +25,8 @@ namespace ADAccountManager.Utilities.UserService
                 if (user is null)
                     return false;
 
-                using UserPrincipal userPrincipal = new UserPrincipal(_context)
+                //using UserPrincipal userPrincipal = new UserPrincipal(_context)
+                using InetOrgPerson userPrincipal = new InetOrgPerson(_context)
                 {
                     Name = user.UserPrincipalName,
                     GivenName = user.FirstName,
@@ -34,6 +35,10 @@ namespace ADAccountManager.Utilities.UserService
                     SamAccountName = user.UserPrincipalName,
                     DisplayName = user.FirstName + " " + user.LastName,
                     Description = user.FirstName + " " + user.LastName,
+                    MobilePhone = user.MobilePhone,
+                    EmailAddress = user.UserPrincipalName + "@" + user.Domain,
+                    ProxyAddresses = new string[] { "SMTP:" + user.UserPrincipalName + "@" + user.Domain},
+                    UsageLocation = "ZA",
                     Enabled = true
                 };
 

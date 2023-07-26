@@ -5,6 +5,7 @@ using ADAccountManager.Utilities.CsvOperations;
 using ADAccountManager.Utilities.CsvService;
 using ADAccountManager.Utilities.GroupService;
 using ADAccountManager.Utilities.UserService;
+using System.Configuration;
 using System.DirectoryServices.AccountManagement;
 
 namespace ADAccountManager;
@@ -24,17 +25,18 @@ public partial class MainPage : ContentPage
 
     private async void OnCounterClicked(object sender, EventArgs e)
 	{
-        ADUser user = new ADUser{
-            FirstName = "Test",
-            LastName = "User",
-            Domain = "ferrum.local",
-            UserPrincipalName = "test.user"
-        };
+        //ADUser user = new ADUser
+        //{
+        //    FirstName = "Test",
+        //    LastName = "User",
+        //    Domain = "ferrum.local",
+        //    UserPrincipalName = "test.user"
+        //};
 
-        Models.ADGroup group = new Models.ADGroup
-        {
-            Name = "TestGroup-FULL",
-        };
+        //Models.ADGroup group = new Models.ADGroup
+        //{
+        //    Name = "TestGroup-FULL",
+        //};
 
         IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(_context);
         ICsvService csvService = new CsvService();
@@ -42,8 +44,8 @@ public partial class MainPage : ContentPage
 
         try
         {
-            var result = await csvOperations.CreateUserPrincipalsFromCsvAsync("C:\\Users\\netadmin\\OneDrive - Ferrum High School\\Desktop\\users.csv");
-            
+            var result = await csvOperations.CreateUserPrincipalsFromCsvAsync("C:\\Users\\netadmin\\OneDrive - Ferrum High School\\Desktop\\testCsv.csv");
+
             if (result.NotCreatedUserPrincipals.Count > 0)
             {
                 string principals = string.Empty;
