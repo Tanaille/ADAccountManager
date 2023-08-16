@@ -38,7 +38,7 @@ namespace ADAccountManager.Utilities.UserService
                     MobilePhone = user.MobilePhone,
                     EmailAddress = user.UserPrincipalName + "@" + user.Domain,
                     ProxyAddresses = new string[] { "SMTP:" + user.UserPrincipalName + "@" + user.Domain},
-                    UsageLocation = "ZA",
+                    //UsageLocation = "ZA",
                     Enabled = true
                 };
 

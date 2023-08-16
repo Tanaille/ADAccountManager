@@ -18,7 +18,7 @@ namespace ADAccountManager.Utilities.CsvService
                 if (!File.Exists(csvPath))
                     throw new FileNotFoundException("The specified file was not found: " + csvPath);
 
-                using FileStream fileStream = new FileStream(csvPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using FileStream fileStream = new FileStream(csvPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 using StreamReader reader = new StreamReader(fileStream);
                 using CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 

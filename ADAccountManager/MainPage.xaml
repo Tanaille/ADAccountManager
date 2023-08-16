@@ -1,41 +1,140 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ADAccountManager.MainPage">
+             x:Class="ADAccountManager.MainPage"
+             Title="AD Account Manager">
 
     <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+        <VerticalStackLayout>
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+            <!-- User creation method selection -->
+            <StackLayout
+                Spacing="-10"
+                Margin="10">
 
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
+                <RadioButton 
+                x:Name="SingeUserCreationRadioButton"
+                Content="Single User Creation"
+                IsChecked="True"
+                />
 
-            <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
+                <RadioButton
+                x:Name="MultipleUserCreationRadioButton"
+                Content="Multi User Creation"
+                CheckedChanged="UserCreationMethodSet_CheckedChanged"
+                IsChecked="False"
+                />
+                
+            </StackLayout>
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
+            <!-- Multi user creation (CSV) method -->
+            <StackLayout
+                x:Name="MultipleUserCreationStackLayout"
+                Margin="10"
+                HorizontalOptions="Start"
+                IsVisible="False">
+
+                <Button
+                    x:Name="CsvPicker"
+                    Text="Select CSV File"
+                    MinimumWidthRequest="370"
+                    MaximumWidthRequest="600"
+                    SemanticProperties.Hint="Choose the CSV file which will be used to create the users."
+                    Clicked="CsvPicker_Clicked"
+                    HorizontalOptions="StartAndExpand"
+                    
+                ></Button>
+
+                <!-- Create multiple users button -->
+                <Button
+                    x:Name="CreateMultipleUsersButton"
+                    Clicked="CreateMultipleUsersButton_Clicked"
+                    Text="Create User"/>
+
+            </StackLayout>
+
+            <!-- Single user creation method (manual entry) -->
+            <StackLayout
+                x:Name="SingleUserCreationStackLayout"
+                HorizontalOptions="Start"
+                Margin="10"
+                IsVisible="True">
+
+                <CollectionView
+                    x:Name="ADUserCollectionView">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding FirstName}"></Label>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- First name -->
+                <HorizontalStackLayout
+                    HorizontalOptions="Start"
+                    Spacing="81"
+                    Margin="10"
+                    IsVisible="True">
+
+                    <Label 
+                        Text="First name"
+                        VerticalOptions="Center"/>
+
+                    <Entry
+                    x:Name="FirstNameEntry"
+                    MinimumWidthRequest="200"
+                    MaximumWidthRequest="400"/>
+
+                </HorizontalStackLayout>
+
+                <!-- Last name -->
+                <HorizontalStackLayout
+                    HorizontalOptions="Start"
+                    Spacing="82"
+                    Margin="10"
+                    IsVisible="True">
+
+                    <Label 
+                        Text="Last name"
+                        VerticalOptions="Center"/>
+
+                    <Entry
+                    x:Name="LastNameEntry"
+                    MinimumWidthRequest="200"
+                    MaximumWidthRequest="400"/>
+
+
+                </HorizontalStackLayout>
+
+                <!-- Mobile number -->
+                <HorizontalStackLayout
+                    HorizontalOptions="Start"
+                    Spacing="50"
+                    Margin="10"
+                    IsVisible="True">
+
+                    <Label 
+                        Text="Mobile number"
+                        VerticalOptions="Center"/>
+
+                    <Entry
+                    x:Name="MobileEntry"
+                    MinimumWidthRequest="200"
+                    MaximumWidthRequest="400"/>
+
+
+                </HorizontalStackLayout>
+
+                <!-- Create single user button -->
+                <Button
+                    x:Name="CreateSingleUserButton"
+                    Clicked="CreateSingleUserButton_Clicked"
+                    Text="Create User"/>
+
+            </StackLayout>
 
         </VerticalStackLayout>
+        
     </ScrollView>
 
 </ContentPage>
