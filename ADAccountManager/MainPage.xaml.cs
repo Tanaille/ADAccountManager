@@ -8,6 +8,7 @@ using ADAccountManager.Utilities.GroupService;
 using ADAccountManager.Utilities.UserService;
 using ADAccountManager.Utilities.ViewModelOperations;
 using ADAccountManager.Utilities.WindowLayoutOperations;
+using Microsoft.Extensions.Configuration;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.DirectoryServices.AccountManagement;
@@ -18,17 +19,28 @@ namespace ADAccountManager;
 
 public partial class MainPage : ContentPage
 {
-    private readonly IConfigService _configService = new ConfigService();
+    //private readonly IConfigService _configService = new ConfigService();
     private readonly PrincipalContext _context;
     private readonly Config _config;
+    private string _configFilePath;
     private FileResult _fileResult;
 
     public MainPage()
     {
         InitializeComponent();
 
-        _config = _configService.ReadConfig("C:\\Users\\netadmin\\source\\repos\\ADAccountManager\\ADAccountManager\\Resources\\Config\\appsettings.json");
+        // Retrieve and read the config file
+        string basePath = AppDomain.CurrentDomain.BaseDirectory;
+        string relativePath = "Resources\\Config\\appsettings.json";
+        _configFilePath = Path.Combine(basePath, relativePath);
+
+        _config = ConfigService.ReadConfig(_configFilePath);
+        
+        // Create the PrincipalContext using the _config object
         _context = new PrincipalContext(ContextType.Domain, _config.DomainName, _config.DefaultDomainOU, _config.DomainUser, _config.DomainPassword);
+
+        // Set the initial main window size
+        WindowLayoutOperations.ChangeWindowSize(450, 450);
     }
 
     // Displays the selected user creation method (single user or multi user creation).
@@ -50,18 +62,20 @@ public partial class MainPage : ContentPage
     // Handles .csv file selection and stores the result in _fileResult.
     private async void CsvPicker_Clicked(object sender, EventArgs e)
     {
-        // Define a custom file picker file type for .csv files.
-        FilePickerFileType csvFileType = new FilePickerFileType(
-                new Dictionary<DevicePlatform, IEnumerable<string>>
-                {
-                            { DevicePlatform.WinUI, new[] { ".csv" } }, // CSV file extension.
-                });
+        //// Define a custom file picker file type for .csv files.
+        //FilePickerFileType csvFileType = new FilePickerFileType(
+        //        new Dictionary<DevicePlatform, IEnumerable<string>>
+        //        {
+        //                    { DevicePlatform.WinUI, new[] { ".csv" } }, // CSV file extension.
+        //        });
 
-        _fileResult = await FileOperations.PickFile(new PickOptions
-        {
-            PickerTitle = "Select the CSV file",
-            FileTypes = csvFileType
-        });
+        //_fileResult = await FileOperations.PickFile(new PickOptions
+        //{
+        //    PickerTitle = "Select the CSV file",
+        //    FileTypes = csvFileType
+        //});
+
+        await Navigation.PushModalAsync(new Views.SettingsPage(_config, _configFilePath));
     }
 
     // Create a single user account using the details entered in the main form.
