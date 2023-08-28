@@ -1,13 +1,14 @@
 ﻿using ADAccountManager.Models;
+using ADAccountManager.Utilities.Services;
 using System.DirectoryServices.AccountManagement;
 
 namespace ADAccountManager.Utilities.UserService
 {
     internal class UserPrincipalCreator : IUserPrincipalCreator
     {
-        private readonly PrincipalContext _context;
+        private readonly IActiveDirectoryService _context;
 
-        public UserPrincipalCreator(PrincipalContext context)
+        public UserPrincipalCreator(IActiveDirectoryService context)
         {
             _context = context;
         }
@@ -26,7 +27,7 @@ namespace ADAccountManager.Utilities.UserService
                     return false;
 
                 //using UserPrincipal userPrincipal = new UserPrincipal(_context)
-                using InetOrgPerson userPrincipal = new InetOrgPerson(_context)
+                using InetOrgPerson userPrincipal = new InetOrgPerson(_context.GetPrincipalContext())
                 {
                     Name = user.UserPrincipalName,
                     GivenName = user.FirstName,

@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using System.DirectoryServices.AccountManagement;
-using ADAccountManager.Utilities.UserService;
-using ADAccountManager.Utilities.GroupService;
-using ADAccountManager.Models;
+using ADAccountManager.Utilities.Services;
+using ADAccountManager.Views.HomePage;
+using ADAccountManager.Views.SettingsPage;
+using ADAccountManager.Views.UserCreationView;
 
 namespace ADAccountManager;
 
@@ -12,7 +11,17 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
-		builder
+
+		// Register services
+		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddSingleton<HomePage>();
+		builder.Services.AddSingleton<SettingsView>();
+		builder.Services.AddSingleton<SingleUserCreationView>();
+		builder.Services.AddSingleton<MultiUserCreationView>();
+		builder.Services.AddSingleton<IActiveDirectoryService, ActiveDirectoryService>();
+		builder.Services.AddSingleton<IConfigService, ConfigService>();
+
+        builder
 			.UseMauiApp<App>()
 			.ConfigureFonts(fonts =>
 			{

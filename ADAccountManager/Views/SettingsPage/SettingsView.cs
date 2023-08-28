@@ -1,20 +1,11 @@
 ﻿using ADAccountManager.Models;
-using ADAccountManager.Utilities.ConfigService;
-using Microsoft.Maui.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ADAccountManager.Utilities.Services;
 
-namespace ADAccountManager.Views
+namespace ADAccountManager.Views.SettingsPage
 {
-    internal class SettingsPage : ContentPage
+    internal class SettingsView
     {
-        private Config _config;
-        private string _configFilePath;
+
 
         public Entry DomainNameEntry { get; set; }
         public Entry MailDomainEntry { get; set; }
@@ -22,13 +13,10 @@ namespace ADAccountManager.Views
         public Entry DomainPasswordEntry { get; set; }
         public Entry DefaultDomainOuEntry { get; set; }
 
-        public SettingsPage(Config config, string configFilePath) 
-        {
-            Title = "Settings Page";
-
+        public Grid AddElements(IConfigService configService)
+        { 
             // Store config info
-            _config = config;
-            _configFilePath = configFilePath;
+            Config config = configService.GetConfig(); 
 
             // Define the settings GridLayout
             Grid settingsGridLayout = new Grid
@@ -58,8 +46,8 @@ namespace ADAccountManager.Views
             DomainNameEntry = new Entry();
             MailDomainEntry = new Entry();
             DomainUserEntry = new Entry();
-            DomainPasswordEntry = new Entry { IsPassword = true};
-            DefaultDomainOuEntry = new Entry ();
+            DomainPasswordEntry = new Entry { IsPassword = true };
+            DefaultDomainOuEntry = new Entry();
 
             // Save settings button
             Button saveSettingsButton = new Button
@@ -92,12 +80,13 @@ namespace ADAccountManager.Views
 
             PopulateSettings(config);
 
-            Content = settingsGridLayout;
+            return settingsGridLayout;
         }
 
         private void SaveSettingsButton_Clicked(object sender, EventArgs e)
         {
-            ConfigService.WriteConfig(this, _configFilePath);
+            //ConfigService.WriteConfig(this, _configFilePath);
+
         }
 
         private void PopulateSettings(Config config)

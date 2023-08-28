@@ -1,6 +1,6 @@
 ﻿namespace ADAccountManager.Models
 {
-    internal class Config
+    public class Config
     {
         public string DomainName { get; set; }
         public string MailDomain { get; set; }

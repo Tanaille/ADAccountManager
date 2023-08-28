@@ -1,155 +1,119 @@
-﻿using ADAccountManager.Models;
-using ADAccountManager.Utilities;
-using ADAccountManager.Utilities.ConfigService;
-using ADAccountManager.Utilities.CsvOperations;
-using ADAccountManager.Utilities.CsvService;
-using ADAccountManager.Utilities.FileOperations;
-using ADAccountManager.Utilities.GroupService;
-using ADAccountManager.Utilities.UserService;
-using ADAccountManager.Utilities.ViewModelOperations;
+﻿using ADAccountManager.Utilities.Services;
 using ADAccountManager.Utilities.WindowLayoutOperations;
-using Microsoft.Extensions.Configuration;
-using System.Collections.ObjectModel;
-using System.Configuration;
-using System.DirectoryServices.AccountManagement;
-using System.Security.Principal;
-using System.Text.RegularExpressions;
+using ADAccountManager.Views.HomePage;
 
 namespace ADAccountManager;
 
 public partial class MainPage : ContentPage
 {
-    //private readonly IConfigService _configService = new ConfigService();
-    private readonly PrincipalContext _context;
-    private readonly Config _config;
-    private string _configFilePath;
-    private FileResult _fileResult;
+    private readonly HomePage _homePage;
+    private readonly IConfigService _configService;
 
-    public MainPage()
+    public MainPage(HomePage homePage, IConfigService configService)
     {
         InitializeComponent();
+        BindingContext = _homePage;
 
-        // Retrieve and read the config file
-        string basePath = AppDomain.CurrentDomain.BaseDirectory;
-        string relativePath = "Resources\\Config\\appsettings.json";
-        _configFilePath = Path.Combine(basePath, relativePath);
+        _homePage = homePage;
+        _configService = configService;
 
-        _config = ConfigService.ReadConfig(_configFilePath);
-        
-        // Create the PrincipalContext using the _config object
-        _context = new PrincipalContext(ContextType.Domain, _config.DomainName, _config.DefaultDomainOU, _config.DomainUser, _config.DomainPassword);
+        Content = _homePage.Content;
 
         // Set the initial main window size
-        WindowLayoutOperations.ChangeWindowSize(450, 450);
-    }
-
-    // Displays the selected user creation method (single user or multi user creation).
-    private void UserCreationMethodSet_CheckedChanged(object sender, EventArgs e)
-    {
-        if (MultipleUserCreationRadioButton.IsChecked)
-        {
-            MultipleUserCreationStackLayout.IsVisible = true;
-            SingleUserCreationStackLayout.IsVisible = false;
-        }
-
-        else
-        {
-            MultipleUserCreationStackLayout.IsVisible = false;
-            SingleUserCreationStackLayout.IsVisible = true;
-        }
-    }
-
-    // Handles .csv file selection and stores the result in _fileResult.
-    private async void CsvPicker_Clicked(object sender, EventArgs e)
-    {
-        //// Define a custom file picker file type for .csv files.
-        //FilePickerFileType csvFileType = new FilePickerFileType(
-        //        new Dictionary<DevicePlatform, IEnumerable<string>>
-        //        {
-        //                    { DevicePlatform.WinUI, new[] { ".csv" } }, // CSV file extension.
-        //        });
-
-        //_fileResult = await FileOperations.PickFile(new PickOptions
-        //{
-        //    PickerTitle = "Select the CSV file",
-        //    FileTypes = csvFileType
-        //});
-
-        await Navigation.PushModalAsync(new Views.SettingsPage(_config, _configFilePath));
-    }
-
-    // Create a single user account using the details entered in the main form.
-    private async void CreateSingleUserButton_Clicked(object sender, EventArgs e)
-    {
-        string firstName = FirstNameEntry.Text;
-        string lastName = LastNameEntry.Text;
-        string mobile = MobileEntry.Text;
-        string userPrincipalName = firstName.ToLower() + "." + lastName.ToLower();
-        userPrincipalName = Regex.Replace(userPrincipalName, @"\s+", ""); // Strip whitespace from the UPN.
-        string mailDomain = _config.MailDomain;
-
-        IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(_context);
-        ADUser user = new ADUser()
-        {
-            FirstName = firstName,
-            LastName = lastName,
-            UserPrincipalName = userPrincipalName,
-            Domain = mailDomain,
-            MobilePhone = mobile,
-        };
-
-        try
-        {
-            var result = await userPrincipalCreator.CreateUserPrincipalAsync(user);
-
-            if (result)
-                await DisplayAlert("Created users", "The following user principals have been created:\n\n" + user.FirstName + " " + user.LastName, "OK");
-
-            else
-                await DisplayAlert("User creation failed", "The following user principals could not be created:\n\n" + user.FirstName + " " + user.LastName, "OK");
-        }
-        catch (Exception ex)
-        {
-            object userMessage = ex.Data["UserMessage"];
-            await DisplayAlert("Error: " + ex.Message, userMessage.ToString(), "OK");
-        }
-    }
-
-    // Create multiple user accounts simultaneously by using data stored in a pre-formatted CSV file.
-    private async void CreateMultipleUsersButton_Clicked(object sender, EventArgs e)
-    {
-        IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(_context);
-        ICsvService csvService = new CsvService();
-        ICsvOperations csvOperations = new CsvOperations(csvService, userPrincipalCreator, _context);
-
-        try
-        {
-            var result = await csvOperations.CreateUserPrincipalsFromCsvAsync(_fileResult.FullPath);
-
-            if (result.NotCreatedUserPrincipals.Count > 0)
-            {
-                string principals = string.Empty;
-
-                foreach (var userPrincipal in result.NotCreatedUserPrincipals)
-                    principals += (userPrincipal.UserPrincipalName + "\n");
-
-                await DisplayAlert("User creation failed", "The following user principals could not be created:\n\n" + principals, "OK");
-            }
-
-            if (result.CreatedUserPrincipals.Count > 0)
-            {
-                string principals = string.Empty;
-
-                foreach (var userPrincipal in result.CreatedUserPrincipals)
-                    principals += (userPrincipal.UserPrincipalName + "\n");
-
-                await DisplayAlert("Created users", "The following user principals have been created:\n\n" + principals, "OK");
-            }
-        }
-        catch (Exception ex)
-        {
-            object userMessage = ex.Data["UserMessage"];
-            await DisplayAlert("Error: " + ex.Message, userMessage.ToString(), "OK");
-        }
+        WindowLayoutOperations.ChangeWindowSize(450, 480);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //// Handles .csv file selection and stores the result in _fileResult.
+    //private async void CsvPicker_Clicked(object sender, EventArgs e)
+    //{
+    //    //// Define a custom file picker file type for .csv files.
+    //    //FilePickerFileType csvFileType = new FilePickerFileType(
+    //    //        new Dictionary<DevicePlatform, IEnumerable<string>>
+    //    //        {
+    //    //                    { DevicePlatform.WinUI, new[] { ".csv" } }, // CSV file extension.
+    //    //        });
+
+    //    //_fileResult = await FileOperations.PickFile(new PickOptions
+    //    //{
+    //    //    PickerTitle = "Select the CSV file",
+    //    //    FileTypes = csvFileType
+    //    //});
+
+    //    await Navigation.PushModalAsync(new Views.HomePage(DependencyService.Get<IActiveDirectoryService>()));
+    //}
+
+
+    //// Create multiple user accounts simultaneously by using data stored in a pre-formatted CSV file.
+    //private async void CreateMultipleUsersButton_Clicked(object sender, EventArgs e)
+    //{
+    //    IUserPrincipalCreator userPrincipalCreator = new UserPrincipalCreator(DependencyService.Get<IActiveDirectoryService>());
+    //    ICsvService csvService = new CsvService();
+    //    ICsvOperations csvOperations = new CsvOperations(csvService, userPrincipalCreator, DependencyService.Get<IActiveDirectoryService>().GetPrincipalContext());
+
+    //    try
+    //    {
+    //        var result = await csvOperations.CreateUserPrincipalsFromCsvAsync(_fileResult.FullPath);
+
+    //        if (result.NotCreatedUserPrincipals.Count > 0)
+    //        {
+    //            string principals = string.Empty;
+
+    //            foreach (var userPrincipal in result.NotCreatedUserPrincipals)
+    //                principals += (userPrincipal.UserPrincipalName + "\n");
+
+    //            await DisplayAlert("User creation failed", "The following user principals could not be created:\n\n" + principals, "OK");
+    //        }
+
+    //        if (result.CreatedUserPrincipals.Count > 0)
+    //        {
+    //            string principals = string.Empty;
+
+    //            foreach (var userPrincipal in result.CreatedUserPrincipals)
+    //                principals += (userPrincipal.UserPrincipalName + "\n");
+
+    //            await DisplayAlert("Created users", "The following user principals have been created:\n\n" + principals, "OK");
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        object userMessage = ex.Data["UserMessage"];
+    //        await DisplayAlert("Error: " + ex.Message, userMessage.ToString(), "OK");
+    //    }
+//    }
+//}
