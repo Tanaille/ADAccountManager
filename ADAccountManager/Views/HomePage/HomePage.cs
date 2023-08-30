@@ -1,15 +1,5 @@
-﻿using ADAccountManager.Models;
-using ADAccountManager.Utilities.Services;
-using ADAccountManager.Utilities.UserService;
-using ADAccountManager.Views.SettingsPage;
+﻿using ADAccountManager.Utilities.Services;
 using ADAccountManager.Views.UserCreationView;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ADAccountManager.Views.HomePage
 {
@@ -99,9 +89,9 @@ namespace ADAccountManager.Views.HomePage
 
         private void SettingsIcon_Clicked(object sender, EventArgs e)
         {
-            userCreationStackLayout.Clear();
-            SettingsView settingsView = new SettingsView();
-            userCreationStackLayout.Add(settingsView.AddElements(_configService));
+            //userCreationStackLayout.Clear();
+            //SettingsView settingsView = new SettingsView(userCreationStackLayout);
+            //userCreationStackLayout.Add(settingsView.AddElements(_configService));
         }
 
         private void SingleUserSelectionRadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)

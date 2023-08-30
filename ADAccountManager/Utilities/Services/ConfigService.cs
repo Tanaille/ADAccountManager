@@ -11,16 +11,17 @@ namespace ADAccountManager.Utilities.Services
     public class ConfigService : IConfigService
     {
         private readonly Config _config;
+        private readonly string _configFilePath;
 
         public ConfigService()
         {
             // Retrieve and read the config file
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             string relativePath = "Resources\\Config\\appsettings.json";
-            string configFilePath = Path.Combine(basePath, relativePath);
+            _configFilePath = Path.Combine(basePath, relativePath);
 
 
-            using StreamReader reader = new StreamReader(configFilePath);
+            using StreamReader reader = new StreamReader(_configFilePath);
 
             string json = reader.ReadToEnd();
             _config = JsonSerializer.Deserialize<Config>(json);
@@ -29,6 +30,11 @@ namespace ADAccountManager.Utilities.Services
         public Config GetConfig()
         {
             return _config;
+        }
+
+        public void SetConfig(Config config)
+        {
+            File.WriteAllText(_configFilePath, JsonSerializer.Serialize(config));
         }
     }
 }

@@ -11,5 +11,6 @@ namespace ADAccountManager.Utilities.Services
     public interface IConfigService
     {
         Config GetConfig();
+        void SetConfig(Config config);
     }
 }

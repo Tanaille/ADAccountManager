@@ -1,20 +1,31 @@
 ﻿using ADAccountManager.Models;
 using ADAccountManager.Utilities.Services;
+using ADAccountManager.Views.UserCreationView;
+using System.Text.Json;
 
 namespace ADAccountManager.Views.SettingsPage
 {
     internal class SettingsView
     {
-
-
+        private readonly IConfigService _test;
         public Entry DomainNameEntry { get; set; }
         public Entry MailDomainEntry { get; set; }
         public Entry DomainUserEntry { get; set; }
         public Entry DomainPasswordEntry { get; set; }
         public Entry DefaultDomainOuEntry { get; set; }
 
+        private readonly StackLayout _userCreationStackLayout;
+
+        public SettingsView(StackLayout userCreationStackLayout, IConfigService test)
+        {
+            _userCreationStackLayout = userCreationStackLayout;
+            _test = test;
+        }
+
         public Grid AddElements(IConfigService configService)
-        { 
+        {
+
+            _test.GetConfig();
             // Store config info
             Config config = configService.GetConfig(); 
 
@@ -57,7 +68,7 @@ namespace ADAccountManager.Views.SettingsPage
             };
 
             saveSettingsButton.Clicked += SaveSettingsButton_Clicked;
-
+            
             // Populate grid cells with labels and entries
             settingsGridLayout.Add(new Label() { Text = "Domain name:", VerticalTextAlignment = TextAlignment.Center }, 0, 0);
             settingsGridLayout.Add(DomainNameEntry, 1, 0);
@@ -85,8 +96,22 @@ namespace ADAccountManager.Views.SettingsPage
 
         private void SaveSettingsButton_Clicked(object sender, EventArgs e)
         {
-            //ConfigService.WriteConfig(this, _configFilePath);
+            ConfigService configService = new ConfigService();
 
+            Config config = new Config
+            {
+                DomainName = DomainNameEntry.Text,
+                MailDomain = MailDomainEntry.Text,
+                DomainUser = DomainUserEntry.Text,
+                DomainPassword = DomainPasswordEntry.Text,
+                DefaultDomainOU = DefaultDomainOuEntry.Text,
+            };
+
+            configService.SetConfig(config);
+
+            _userCreationStackLayout.Clear();
+            SingleUserCreationView singleUserCreationView = new SingleUserCreationView();
+            _userCreationStackLayout.Add(singleUserCreationView.AddElements());
         }
 
         private void PopulateSettings(Config config)

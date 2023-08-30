@@ -1,0 +1,5 @@
+{
+  "DomainName": "ad.ferrum.org.za",
+  "MailDomain": "ferrum.org.za",
+  "OrganizationalUnit": "OU=Dev,OU=UserAccounts,DC=ad,DC=ferrum,DC=org,DC=za"
+}
